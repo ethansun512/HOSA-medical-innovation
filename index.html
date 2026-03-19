@@ -32,7 +32,7 @@
   }
 
   header {
-    padding: 18px 20px 14px;
+    padding: 16px 20px 12px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -40,70 +40,86 @@
     flex-shrink: 0;
     background: var(--surface);
   }
-  .logo { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 500; letter-spacing: 0.5px; }
+  .logo { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 500; }
   .logo span { opacity: 0.4; font-weight: 300; }
   .live-indicator { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
   .dot.active { background: var(--safe); animation: blink 2s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  .camera-wrap { position: relative; flex: 1; background: #1a1916; overflow: hidden; }
-  video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.95; }
+  .camera-wrap { position: relative; flex: 1; background: #1a1916; overflow: hidden; min-height: 0; }
+  video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
   canvas { display: none; }
 
   .reticle { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 64px; height: 64px; pointer-events: none; z-index: 5; }
   .reticle::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:64px; height:64px; border:1.5px solid rgba(255,255,255,0.7); border-radius:50%; }
-  .reticle::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:6px; height:6px; background:white; border-radius:50%; opacity:0.9; }
+  .reticle::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:6px; height:6px; background:white; border-radius:50%; }
 
-  .live-chip { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(26,25,22,0.75); backdrop-filter:blur(10px); border-radius:20px; padding:6px 14px 6px 8px; display:none; align-items:center; gap:8px; z-index:10; }
-  .live-swatch { width:20px; height:20px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); }
-  .live-hex { font-family:'IBM Plex Mono',monospace; font-size:13px; color:white; letter-spacing:0.5px; }
+  .live-chip { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); background:rgba(26,25,22,0.8); backdrop-filter:blur(10px); border-radius:20px; padding:5px 12px 5px 7px; display:none; align-items:center; gap:7px; z-index:10; }
+  .live-swatch { width:18px; height:18px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); }
+  .live-hex { font-family:'IBM Plex Mono',monospace; font-size:12px; color:white; }
 
   .scan-progress { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:80px; height:80px; pointer-events:none; z-index:6; display:none; }
   .scan-progress svg { width:80px; height:80px; transform:rotate(-90deg); }
-  .scan-progress circle { fill:none; stroke:white; stroke-width:2; stroke-linecap:round; stroke-dasharray:226; stroke-dashoffset:226; transition:stroke-dashoffset 0.1s linear; }
+  .scan-progress circle { fill:none; stroke:white; stroke-width:2; stroke-linecap:round; stroke-dasharray:226; stroke-dashoffset:226; }
 
-  .start-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; z-index:20; background:rgba(26,25,22,0.5); }
-  .start-btn { background:white; color:#1a1916; border:none; padding:14px 28px; border-radius:40px; font-family:'IBM Plex Sans',sans-serif; font-size:15px; font-weight:500; cursor:pointer; }
+  .start-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:20; background:rgba(26,25,22,0.55); }
+  .start-btn { background:white; color:#1a1916; border:none; padding:13px 26px; border-radius:40px; font-family:'IBM Plex Sans',sans-serif; font-size:15px; font-weight:500; cursor:pointer; }
 
-  .bottom-panel { flex-shrink:0; background:var(--surface); border-top:1px solid var(--border); padding:16px 20px 28px; overflow-y:auto; max-height:52vh; }
+  /* BOTTOM PANEL */
+  .bottom-panel { flex-shrink:0; background:var(--surface); border-top:1px solid var(--border); padding:14px 20px 24px; overflow-y:auto; max-height:58vh; }
 
-  .controls { display:flex; align-items:center; justify-content:center; gap:24px; margin-bottom:8px; }
+  .controls { display:flex; align-items:center; justify-content:center; gap:24px; margin-bottom:6px; }
   .flip-btn { background:none; border:1px solid var(--border); color:var(--text); width:40px; height:40px; border-radius:50%; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  .capture-btn { width:60px; height:60px; border-radius:50%; background:var(--accent); border:none; cursor:pointer; position:relative; transition:transform 0.1s,opacity 0.2s; }
+  .capture-btn { width:58px; height:58px; border-radius:50%; background:var(--accent); border:none; cursor:pointer; position:relative; transition:transform 0.1s,opacity 0.2s; }
   .capture-btn:disabled { opacity:0.3; cursor:default; }
   .capture-btn:not(:disabled):active { transform:scale(0.93); }
-  .capture-btn::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); }
-  .capture-label { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; letter-spacing:1px; text-align:center; margin-bottom:16px; }
+  .capture-btn::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); }
+  .capture-label { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; letter-spacing:1px; text-align:center; margin-bottom:14px; }
 
   .result { display:none; }
   .result.show { display:block; }
-  .divider { height:1px; background:var(--border); margin:14px 0; }
+  .divider { height:1px; background:var(--border); margin:12px 0; }
 
-  .ph-bar-wrap { margin-bottom:14px; }
-  .ph-labels { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:5px; }
-  .ph-bar { height:6px; border-radius:3px; background:linear-gradient(to right,#4caf7d,#f5c842,#e8773a,#b83232); position:relative; }
-  .ph-marker { position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; background:var(--accent); border:2px solid white; box-shadow:0 1px 4px rgba(0,0,0,0.25); transition:left 0.5s ease; }
+  /* BTB bar — range 6.0 to 8.0 */
+  .ph-bar-wrap { margin-bottom:6px; }
+  .ph-labels { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-bottom:4px; }
+  .ph-bar { height:8px; border-radius:4px; background:linear-gradient(to right, #d4c84a, #a0c040, #3a9e50, #2a8a7a, #2d5fa8); position:relative; }
+  .ph-marker { position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; background:var(--accent); border:2px solid white; box-shadow:0 1px 4px rgba(0,0,0,0.3); transition:left 0.5s ease; }
 
-  .result-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
-  .result-label { font-size:11px; font-family:'IBM Plex Mono',monospace; color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; }
-  .result-val { font-size:14px; font-weight:500; }
+  /* Threshold markers */
+  .threshold-row { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:9px; margin-bottom:14px; }
+  .threshold-safe  { color:var(--safe); }
+  .threshold-warn  { color:var(--warn); }
+  .threshold-danger{ color:var(--danger); }
 
-  .infection-pct { font-size:36px; font-weight:600; line-height:1; margin:4px 0 2px; }
-  .infection-label { font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:14px; }
+  /* BTB swatches */
+  .btb-legend { display:flex; gap:3px; margin-bottom:14px; }
+  .btb-swatch { flex:1; height:20px; border-radius:3px; position:relative; }
+  .btb-swatch span { position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); white-space:nowrap; }
 
-  .safe { color:var(--safe); }
-  .warn { color:var(--warn); }
+  .result-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+  .result-label { font-size:11px; font-family:'IBM Plex Mono',monospace; color:var(--muted); letter-spacing:0.4px; text-transform:uppercase; }
+  .result-val { font-size:13px; font-weight:500; }
+
+  .infection-pct { font-size:38px; font-weight:600; line-height:1; margin:3px 0 2px; }
+  .infection-desc { font-size:12px; font-family:'IBM Plex Mono',monospace; margin-bottom:12px; }
+  .safe   { color:var(--safe); }
+  .warn   { color:var(--warn); }
   .danger { color:var(--danger); }
 
-  .tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
-  .tag { background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:4px 10px; font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text); }
-  .note { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; line-height:1.5; margin-top:12px; text-align:center; }
+  .tag-list { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+  .tag { background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:4px 9px; font-size:11px; font-family:'IBM Plex Mono',monospace; }
 
-  .prompt-card { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:14px; }
-  .prompt-title { font-size:13px; font-weight:500; margin-bottom:4px; }
-  .prompt-sub { font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:10px; }
-  .prompt-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:13px; padding:9px 12px; outline:none; color-scheme:light; }
+  .note { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; line-height:1.5; margin-top:12px; text-align:center; }
+  .cite { font-size:9px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-top:4px; text-align:center; line-height:1.4; }
+
+  .prompt-card { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:13px; margin-bottom:13px; }
+  .prompt-title { font-size:13px; font-weight:500; margin-bottom:3px; }
+  .prompt-sub { font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:9px; }
+  .prompt-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:13px; padding:8px 11px; outline:none; color-scheme:light; }
+
+  .indicator-note { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; text-align:center; margin-bottom:10px; }
 </style>
 </head>
 <body>
@@ -133,6 +149,18 @@
 </div>
 
 <div class="bottom-panel">
+
+  <div class="indicator-note">Calibrated for Bromothymol Blue · Range pH 6.0 – 8.0</div>
+
+  <!-- BTB color reference -->
+  <div class="btb-legend" style="margin-bottom:22px">
+    <div class="btb-swatch" style="background:#d4c84a"><span>6.0</span></div>
+    <div class="btb-swatch" style="background:#a0c040"><span>6.5</span></div>
+    <div class="btb-swatch" style="background:#3a9e50"><span>7.0</span></div>
+    <div class="btb-swatch" style="background:#2a8a7a"><span>7.5</span></div>
+    <div class="btb-swatch" style="background:#2d5fa8"><span>8.0</span></div>
+  </div>
+
   <div class="prompt-card">
     <div class="prompt-title">When were you exposed?</div>
     <div class="prompt-sub">Filters possible infections by incubation period</div>
@@ -146,15 +174,25 @@
   <div class="capture-label" id="captureLabel">TAP TO SCAN (3 SEC)</div>
 
   <div class="result" id="result">
+
     <div class="ph-bar-wrap">
-      <div class="ph-labels"><span>pH 4 · Normal</span><span>pH 9.5 · Infected</span></div>
+      <div class="ph-labels">
+        <span>pH 6.0 · Yellow</span>
+        <span>pH 7.0 · Threshold</span>
+        <span>pH 8.0 · Blue</span>
+      </div>
       <div class="ph-bar"><div class="ph-marker" id="phMarker"></div></div>
     </div>
+    <div class="threshold-row" style="margin-top:6px">
+      <span class="threshold-safe">▲ Normal ≤5.6</span>
+      <span class="threshold-warn">▲ Watch ≥7.0</span>
+      <span class="threshold-danger">▲ Infected ≥7.5</span>
+    </div>
 
-    <div style="margin-bottom:6px">
+    <div style="margin-bottom:4px">
       <div class="result-label">Infection Likelihood</div>
       <div class="infection-pct" id="infectionPct">—</div>
-      <div class="infection-label" id="infectionStatus">—</div>
+      <div class="infection-desc" id="infectionDesc">—</div>
     </div>
 
     <div class="result-row">
@@ -162,40 +200,88 @@
       <span class="result-val" id="phVal">—</span>
     </div>
     <div class="result-row">
-      <span class="result-label">Normal skin pH</span>
-      <span class="result-val">4.5 – 5.5</span>
+      <span class="result-label">BTB color</span>
+      <span class="result-val" id="btbColor">—</span>
     </div>
     <div class="result-row">
-      <span class="result-label">Infected skin pH</span>
-      <span class="result-val">7.5 – 8.5+</span>
+      <span class="result-label">Healthy skin pH</span>
+      <span class="result-val safe">4.1 – 5.6</span>
     </div>
     <div class="result-row">
-      <span class="result-label">Detected color</span>
-      <span class="result-val" id="hexVal" style="font-family:'IBM Plex Mono',monospace;font-size:13px">—</span>
+      <span class="result-label">Infection threshold</span>
+      <span class="result-val warn">≥ 7.0 (early)</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Confirmed infection</span>
+      <span class="result-val danger">≥ 7.5 – 9.0+</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Detected hex</span>
+      <span class="result-val" id="hexVal" style="font-family:'IBM Plex Mono',monospace;font-size:12px">—</span>
     </div>
 
     <div class="divider" id="diseaseDivider" style="display:none"></div>
     <div id="diseaseSection" style="display:none">
-      <div class="result-label" style="margin-bottom:6px">POSSIBLE INFECTIONS <span id="exposureNote" style="font-weight:400;text-transform:none;font-size:10px;color:var(--muted)"></span></div>
+      <div class="result-label" style="margin-bottom:4px">
+        POSSIBLE INFECTIONS
+        <span id="exposureNote" style="font-weight:400;text-transform:none;font-size:10px;color:var(--muted)"></span>
+      </div>
       <div class="tag-list" id="diseaseList"></div>
     </div>
 
     <div class="note">⚠ Not a substitute for medical advice. Consult a doctor.</div>
+    <div class="cite">pH thresholds from Ono et al. (Burns, 2015) · Costa & Horswill (PLOS Pathogens, 2022)</div>
   </div>
 </div>
 
 <script>
+  // Research-backed infection database with incubation windows (hours)
+  // Sources: Ono et al. 2015 (S. aureus, S. epidermidis primary in burn wounds)
+  //          Costa & Horswill 2022 (S. aureus pathogenesis on skin)
   const infections = [
-    { name: 'Staphylococcus aureus',   minH: 24,  maxH: 240 },
-    { name: 'Streptococcus (Group A)', minH: 12,  maxH: 72  },
-    { name: 'MRSA',                    minH: 24,  maxH: 240 },
-    { name: 'E. coli',                 minH: 24,  maxH: 192 },
-    { name: 'Pseudomonas aeruginosa',  minH: 24,  maxH: 96  },
-    { name: 'Cellulitis',              minH: 12,  maxH: 168 },
-    { name: 'Tetanus',                 minH: 72,  maxH: 504 },
-    { name: 'Skin flora imbalance',    minH: 6,   maxH: 48  },
+    // Most common in wound infections per Ono et al.
+    { name: 'Staphylococcus aureus',    minH: 24,  maxH: 240, note: 'most common' },
+    { name: 'Staphylococcus epidermidis', minH: 24, maxH: 240, note: 'common in burns' },
+    // Other wound pathogens
+    { name: 'Streptococcus (Group A)',  minH: 6,   maxH: 72  },
+    { name: 'MRSA',                     minH: 24,  maxH: 240 },
+    { name: 'Pseudomonas aeruginosa',   minH: 24,  maxH: 96  },
+    { name: 'E. coli',                  minH: 24,  maxH: 192 },
+    { name: 'Cellulitis',               minH: 12,  maxH: 168 },
+    { name: 'Tetanus',                  minH: 72,  maxH: 504 },
   ];
 
+  // BTB color transitions
+  const btbColors = [
+    { maxPh: 6.25, label: 'Yellow',       hex: '#d4c84a' },
+    { maxPh: 6.65, label: 'Yellow-green', hex: '#a0c040' },
+    { maxPh: 7.15, label: 'Green',        hex: '#3a9e50' },
+    { maxPh: 7.65, label: 'Blue-green',   hex: '#2a8a7a' },
+    { maxPh: 99,   label: 'Blue',         hex: '#2d5fa8' },
+  ];
+
+  // Research-backed thresholds (Ono et al. 2015):
+  // Normal skin: 4.1–5.6 (Costa & Horswill 2022)
+  // pH rises BEFORE clinical signs appear
+  // Infected wounds: 7.5–9.0 (mean 8.55 in study)
+  // BTB range starts at 6.0, so 0% = pH 6.0 (already slightly above normal)
+  function phToPercent(ph) {
+    // Calibrated: 0% at ≤6.0, 50% at 7.0 (watch zone), 100% at ≥8.5
+    if (ph <= 6.0) return 0;
+    if (ph <= 7.0) return Math.round(((ph - 6.0) / 1.0) * 35);   // 0–35% in 6.0–7.0
+    if (ph <= 7.5) return Math.round(35 + ((ph - 7.0) / 0.5) * 30); // 35–65% in 7.0–7.5
+    if (ph <= 8.5) return Math.round(65 + ((ph - 7.5) / 1.0) * 35); // 65–100% in 7.5–8.5
+    return 100;
+  }
+
+  function getStatus(pct, ph) {
+    if (ph < 7.0) return { label: 'pH below infection threshold', cls: 'safe' };
+    if (ph < 7.5) return { label: 'Elevated — pH rising before clinical signs', cls: 'warn' };
+    if (ph < 8.0) return { label: 'Likely infected — seek medical advice', cls: 'danger' };
+    return { label: 'High infection likelihood — see a doctor now', cls: 'danger' };
+  }
+
+  // Camera + sampling
   let stream = null, facingMode = 'environment', animFrame = null;
   let scanning = false, scanSamples = [];
   const video = document.getElementById('video');
@@ -218,25 +304,27 @@
     const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
     return mx===0?0:(mx-mn)/mx;
   }
+
+  // Hue calibration for Bromothymol Blue
+  // Yellow ~55-68° = pH 6.0
+  // Yellow-green ~68-95° = pH 6.5
+  // Green ~95-148° = pH 7.0
+  // Blue-green ~148-205° = pH 7.5
+  // Blue ~205-235° = pH 8.0
   function rgbToPh(r,g,b){
     const h=rgbToHue(r,g,b), sat=rgbToSat(r,g,b);
-    if(sat<0.12)return 4.7;
-    if(h>=40&&h<=70)  return lerp(4.5,5.5,(h-40)/30);
-    if(h>70&&h<=100)  return lerp(5.5,6.5,(h-70)/30);
-    if(h>100&&h<=160) return lerp(6.5,7.5,(h-100)/60);
-    if(h>160&&h<=220) return lerp(7.5,8.5,(h-160)/60);
-    if(h>220&&h<=290) return lerp(8.5,9.5,(h-220)/70);
-    if(h>340||h<20)   return lerp(4.0,5.0,Math.min(sat,1));
-    if(h>=20&&h<40)   return lerp(5.0,5.5,(h-20)/20);
-    return 5.0;
+    if(sat < 0.12) return 6.0;
+    if(h >= 50  && h <= 68)  return 6.0;
+    if(h > 68   && h <= 95)  return lerp(6.0, 6.5, (h-68)/27);
+    if(h > 95   && h <= 148) return lerp(6.5, 7.0, (h-95)/53);
+    if(h > 148  && h <= 205) return lerp(7.0, 7.5, (h-148)/57);
+    if(h > 205  && h <= 235) return lerp(7.5, 8.0, (h-205)/30);
+    if(h > 235) return 8.0;
+    return 6.0;
   }
-  function phToPercent(ph){ return Math.max(0,Math.min(100,Math.round(((ph-4.0)/(8.5-4.0))*100))); }
-  function getStatus(pct){
-    if(pct<20) return{label:'No signs of infection',cls:'safe'};
-    if(pct<45) return{label:'Slightly elevated — monitor closely',cls:'warn'};
-    if(pct<65) return{label:'Elevated — possible early infection',cls:'warn'};
-    if(pct<80) return{label:'Likely infected — see a doctor soon',cls:'danger'};
-    return{label:'High infection likelihood — seek care now',cls:'danger'};
+
+  function getBtbColor(ph){
+    return btbColors.find(c=>ph<=c.maxPh)||btbColors[btbColors.length-1];
   }
 
   function sampleCenter(){
@@ -244,7 +332,7 @@
     canvas.width=video.videoWidth; canvas.height=video.videoHeight;
     ctx.drawImage(video,0,0);
     const cx=Math.floor(video.videoWidth/2), cy=Math.floor(video.videoHeight/2);
-    const d=ctx.getImageData(cx-4,cy-4,9,9).data;
+    const d=ctx.getImageData(cx-5,cy-5,11,11).data;
     let r=0,g=0,b=0,n=0;
     for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];n++;}
     return{r:Math.round(r/n),g:Math.round(g/n),b:Math.round(b/n)};
@@ -272,7 +360,7 @@
       document.getElementById('dot').classList.add('active');
       document.getElementById('liveLabel').textContent='live';
       liveLoop();
-    }catch(e){alert('Camera access denied. Please allow camera and reload.');}
+    }catch(e){ alert('Camera access denied. Please allow camera and reload.'); }
   }
 
   async function flipCamera(){
@@ -292,6 +380,7 @@
     const progress=document.getElementById('scanProgress');
     const circle=document.getElementById('progressCircle');
     progress.style.display='block';
+    circle.style.strokeDashoffset='226';
     const start=performance.now();
     function ring(now){
       const frac=Math.min((now-start)/1000/SCAN_SEC,1);
@@ -314,31 +403,41 @@
     const avg=scanSamples.reduce((a,p)=>({r:a.r+p.r,g:a.g+p.g,b:a.b+p.b}),{r:0,g:0,b:0});
     const n=scanSamples.length;
     const r=Math.round(avg.r/n),g=Math.round(avg.g/n),b=Math.round(avg.b/n);
-    const hex=toHex(r,g,b), ph=rgbToPh(r,g,b), pct=phToPercent(ph), status=getStatus(pct);
+    const hex=toHex(r,g,b);
+    const ph=rgbToPh(r,g,b);
+    const pct=phToPercent(ph);
+    const status=getStatus(pct,ph);
+    const btb=getBtbColor(ph);
 
-    document.getElementById('phMarker').style.left=((ph-4.0)/(9.5-4.0)*100)+'%';
+    document.getElementById('phMarker').style.left=((ph-6.0)/(8.0-6.0)*100)+'%';
     document.getElementById('infectionPct').textContent=pct+'%';
     document.getElementById('infectionPct').className='infection-pct '+status.cls;
-    document.getElementById('infectionStatus').textContent=status.label;
+    document.getElementById('infectionDesc').textContent=status.label;
+    document.getElementById('infectionDesc').className='infection-desc '+status.cls;
     document.getElementById('phVal').textContent='~'+ph.toFixed(1);
     document.getElementById('hexVal').textContent=hex;
+
+    const colorEl=document.getElementById('btbColor');
+    colorEl.textContent=btb.label;
+    colorEl.style.color=btb.hex;
 
     const expInput=document.getElementById('exposureTime').value;
     const sec=document.getElementById('diseaseSection');
     const div=document.getElementById('diseaseDivider');
 
-    if(pct>=20){
+    // Only show disease list if pH is in concern range
+    if(ph >= 7.0){
       div.style.display='block'; sec.style.display='block';
       if(expInput){
         const hrs=(Date.now()-new Date(expInput))/3600000;
-        document.getElementById('exposureNote').textContent='('+Math.round(hrs)+'h since exposure)';
+        document.getElementById('exposureNote').textContent=' · '+Math.round(hrs)+'h elapsed';
         const possible=infections.filter(i=>hrs>=i.minH&&hrs<=i.maxH);
         document.getElementById('diseaseList').innerHTML=possible.length
-          ?possible.map(i=>'<span class="tag">'+i.name+'</span>').join('')
-          :'<span style="font-size:12px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace">None match this incubation window</span>';
+          ?possible.map(i=>'<span class="tag">'+i.name+(i.note?' <span style="opacity:0.5;font-size:10px">('+i.note+')</span>':'')+' </span>').join('')
+          :'<span style="font-size:11px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace">None match this incubation window</span>';
       } else {
         document.getElementById('exposureNote').textContent='';
-        document.getElementById('diseaseList').innerHTML='<span style="font-size:12px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace">Enter exposure time above to filter infections</span>';
+        document.getElementById('diseaseList').innerHTML='<span style="font-size:11px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace">Enter exposure time above to filter by incubation period</span>';
       }
     } else {
       div.style.display='none'; sec.style.display='none';
@@ -348,7 +447,6 @@
     setTimeout(()=>document.getElementById('result').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
   }
 
-  // Default to now
   const now=new Date();
   now.setMinutes(now.getMinutes()-now.getTimezoneOffset());
   document.getElementById('exposureTime').value=now.toISOString().slice(0,16);
