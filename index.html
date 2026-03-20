@@ -121,7 +121,7 @@
   <div class="btb-legend" style="margin-bottom:22px">
     <div class="btb-swatch" style="background:#f4ea2d"><span>≈6.0</span></div>
     <div class="btb-swatch" style="background:#76c22a"><span>≈6.5</span></div>
-    <div class="btb-swatch" style="background:#158518"><span>≈7.0</span></div>
+    <div class="btb-swatch" style="background:#64cc7a"><span>≈7.0</span></div>
     <div class="btb-swatch" style="background:#2277b4"><span>≈7.5</span></div>
     <div class="btb-swatch" style="background:#304294"><span>≈8.0</span></div>
   </div>
@@ -213,10 +213,11 @@
   // pH 7.5: #2277b4  rn=0.102 gn=0.357 bn=0.541
   // pH 8.0: #304294  rn=0.183 gn=0.252 bn=0.565
   const BTB_REFS = [
+    // rn/gn/bn calibrated from real iPhone camera observations + static image
     { ph:6.0, rn:0.467, gn:0.447, bn:0.086, hex:'#f4ea2d', label:'Yellow',       range:'≈6.0'      },
     { ph:6.5, rn:0.333, gn:0.548, bn:0.119, hex:'#76c22a', label:'Yellow-green', range:'≈6.0–6.5'  },
-    { ph:7.0, rn:0.118, gn:0.747, bn:0.135, hex:'#158518', label:'Green',        range:'≈6.5–7.0'  },
-    { ph:7.5, rn:0.130, gn:0.370, bn:0.500, hex:'#2277b4', label:'Blue-green',   range:'≈7.0–7.5'  },
+    { ph:7.0, rn:0.240, gn:0.480, bn:0.280, hex:'#64cc7a', label:'Green',        range:'≈6.5–7.0'  },
+    { ph:7.5, rn:0.217, gn:0.345, bn:0.438, hex:'#2277b4', label:'Blue-green',   range:'≈7.0–7.5'  },
     { ph:8.0, rn:0.183, gn:0.252, bn:0.565, hex:'#304294', label:'Blue',         range:'≈7.5–8.0+' },
   ];
 
@@ -243,7 +244,7 @@
     const best=dists[0], second=dists[1];
 
     // If best match is very far from all refs, mark unclear
-    if(best.d > 0.18) return{ph:null,ref:null,unclear:true};
+    if(best.d > 0.40) return{ph:null,ref:null,unclear:true};
 
     const refA=BTB_REFS[best.i];
     const refB=BTB_REFS[second.i];
