@@ -6,108 +6,94 @@
 <title>Infectell</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
-
   :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --border: #e0deda;
-    --text: #1a1916;
-    --muted: #9a9590;
-    --accent: #1a1916;
-    --safe: #2d7a4f;
-    --warn: #c47a1a;
-    --danger: #b83232;
+    --bg:#f5f4f0; --surface:#fff; --border:#e0deda;
+    --text:#1a1916; --muted:#9a9590; --accent:#1a1916;
+    --safe:#2d7a4f; --warn:#c47a1a; --danger:#b83232;
   }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--surface);}
+  .logo{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:500;letter-spacing:-0.3px;}
+  .logo span{color:#b83232;}
+  .live-indicator{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+  .dot.active{background:var(--safe);animation:blink 2s infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
-  header { padding:16px 20px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; background:var(--surface); }
-  .logo { font-family:'IBM Plex Mono',monospace; font-size:17px; font-weight:500; letter-spacing:-0.3px; }
-  .logo span { color:#b83232; }
-  .live-indicator { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
-  .dot { width:6px; height:6px; border-radius:50%; background:var(--muted); }
-  .dot.active { background:var(--safe); animation:blink 2s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .camera-wrap{position:relative;flex:1;background:#1a1916;overflow:hidden;min-height:0;}
+  video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;}
+  canvas{display:none;}
 
-  .camera-wrap { position:relative; flex:1; background:#1a1916; overflow:hidden; min-height:0; }
-  video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; }
-  canvas { display:none; }
+  .reticle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;pointer-events:none;z-index:5;}
+  .reticle::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border:1.5px solid rgba(255,255,255,0.8);border-radius:50%;}
+  .reticle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;background:white;border-radius:50%;}
+  .color-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;pointer-events:none;z-index:4;border:3px solid transparent;transition:border-color 0.15s;}
 
-  .reticle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:64px; height:64px; pointer-events:none; z-index:5; }
-  .reticle::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:64px; height:64px; border:1.5px solid rgba(255,255,255,0.8); border-radius:50%; }
-  .reticle::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:6px; height:6px; background:white; border-radius:50%; }
+  .live-chip{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(26,25,22,0.82);backdrop-filter:blur(10px);border-radius:20px;padding:5px 12px 5px 7px;display:none;align-items:center;gap:7px;z-index:10;}
+  .live-swatch{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);}
+  .live-hex{font-family:'IBM Plex Mono',monospace;font-size:12px;color:white;}
+  .live-ph{font-family:'IBM Plex Mono',monospace;font-size:12px;color:rgba(255,255,255,0.65);border-left:1px solid rgba(255,255,255,0.2);padding-left:8px;margin-left:2px;}
 
-  /* Detected color preview ring around reticle */
-  .color-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; pointer-events:none; z-index:4; border:3px solid transparent; transition:border-color 0.15s; }
+  .scan-progress{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;pointer-events:none;z-index:6;display:none;}
+  .scan-progress svg{width:80px;height:80px;transform:rotate(-90deg);}
+  .scan-progress circle{fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-dasharray:226;stroke-dashoffset:226;}
 
-  .live-chip { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); background:rgba(26,25,22,0.82); backdrop-filter:blur(10px); border-radius:20px; padding:5px 12px 5px 7px; display:none; align-items:center; gap:7px; z-index:10; }
-  .live-swatch { width:18px; height:18px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); }
-  .live-hex { font-family:'IBM Plex Mono',monospace; font-size:12px; color:white; }
-  /* Live pH estimate in chip */
-  .live-ph { font-family:'IBM Plex Mono',monospace; font-size:12px; color:rgba(255,255,255,0.6); border-left:1px solid rgba(255,255,255,0.2); padding-left:8px; margin-left:2px; }
+  .start-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;background:rgba(26,25,22,0.55);}
+  .start-btn{background:white;color:#1a1916;border:none;padding:13px 26px;border-radius:40px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;}
 
-  .scan-progress { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:80px; height:80px; pointer-events:none; z-index:6; display:none; }
-  .scan-progress svg { width:80px; height:80px; transform:rotate(-90deg); }
-  .scan-progress circle { fill:none; stroke:white; stroke-width:2; stroke-linecap:round; stroke-dasharray:226; stroke-dashoffset:226; }
+  .bottom-panel{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);padding:14px 20px 24px;overflow-y:auto;max-height:58vh;}
 
-  .start-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:20; background:rgba(26,25,22,0.55); }
-  .start-btn { background:white; color:#1a1916; border:none; padding:13px 26px; border-radius:40px; font-family:'IBM Plex Sans',sans-serif; font-size:15px; font-weight:500; cursor:pointer; }
+  .controls{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:6px;}
+  .flip-btn{background:none;border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .capture-btn{width:58px;height:58px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;position:relative;transition:transform 0.1s,opacity 0.2s;}
+  .capture-btn:disabled{opacity:0.3;cursor:default;}
+  .capture-btn:not(:disabled):active{transform:scale(0.93);}
+  .capture-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);}
+  .capture-label{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:1px;text-align:center;margin-bottom:14px;}
 
-  .bottom-panel { flex-shrink:0; background:var(--surface); border-top:1px solid var(--border); padding:14px 20px 24px; overflow-y:auto; max-height:58vh; }
+  .result{display:none;} .result.show{display:block;}
+  .divider{height:1px;background:var(--border);margin:12px 0;}
 
-  .controls { display:flex; align-items:center; justify-content:center; gap:24px; margin-bottom:6px; }
-  .flip-btn { background:none; border:1px solid var(--border); color:var(--text); width:40px; height:40px; border-radius:50%; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  .capture-btn { width:58px; height:58px; border-radius:50%; background:var(--accent); border:none; cursor:pointer; position:relative; transition:transform 0.1s,opacity 0.2s; }
-  .capture-btn:disabled { opacity:0.3; cursor:default; }
-  .capture-btn:not(:disabled):active { transform:scale(0.93); }
-  .capture-btn::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); }
-  .capture-label { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; letter-spacing:1px; text-align:center; margin-bottom:14px; }
+  /* BTB gradient using exact sampled colors */
+  .ph-bar-wrap{margin-bottom:6px;}
+  .ph-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:4px;}
+  .ph-bar{height:8px;border-radius:4px;background:linear-gradient(to right,#f4ea2d,#76c22a,#158518,#2277b4,#304294);position:relative;}
+  .ph-marker{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.3);transition:left 0.5s ease;}
 
-  .result { display:none; }
-  .result.show { display:block; }
-  .divider { height:1px; background:var(--border); margin:12px 0; }
+  .threshold-row{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;margin-bottom:14px;margin-top:5px;}
 
-  .ph-bar-wrap { margin-bottom:6px; }
-  .ph-labels { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-bottom:4px; }
-  .ph-bar { height:8px; border-radius:4px; background:linear-gradient(to right, #d4c84a, #a0c040, #3a9e50, #2a8a7a, #2d5fa8); position:relative; }
-  .ph-marker { position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; background:var(--accent); border:2px solid white; box-shadow:0 1px 4px rgba(0,0,0,0.3); transition:left 0.5s ease; }
+  /* BTB legend with exact colors */
+  .btb-legend{display:flex;gap:3px;margin-bottom:22px;}
+  .btb-swatch{flex:1;height:22px;border-radius:3px;position:relative;}
+  .btb-swatch span{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);white-space:nowrap;}
 
-  .threshold-row { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:9px; margin-bottom:14px; margin-top:5px; }
+  .result-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+  .result-label{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:0.4px;text-transform:uppercase;}
+  .result-val{font-size:13px;font-weight:500;}
 
-  .btb-legend { display:flex; gap:3px; margin-bottom:22px; }
-  .btb-swatch { flex:1; height:20px; border-radius:3px; position:relative; }
-  .btb-swatch span { position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); white-space:nowrap; }
+  .infection-pct{font-size:38px;font-weight:600;line-height:1;margin:3px 0 2px;}
+  .infection-desc{font-size:12px;font-family:'IBM Plex Mono',monospace;margin-bottom:12px;}
+  .safe{color:var(--safe);} .warn{color:var(--warn);} .danger{color:var(--danger);}
 
-  .result-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
-  .result-label { font-size:11px; font-family:'IBM Plex Mono',monospace; color:var(--muted); letter-spacing:0.4px; text-transform:uppercase; }
-  .result-val { font-size:13px; font-weight:500; }
+  .tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+  .tag{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 9px;font-size:11px;font-family:'IBM Plex Mono',monospace;}
 
-  .infection-pct { font-size:38px; font-weight:600; line-height:1; margin:3px 0 2px; }
-  .infection-desc { font-size:12px; font-family:'IBM Plex Mono',monospace; margin-bottom:12px; }
-  .safe { color:var(--safe); } .warn { color:var(--warn); } .danger { color:var(--danger); }
+  .note{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;line-height:1.5;margin-top:12px;text-align:center;}
+  .cite{font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:4px;text-align:center;line-height:1.4;}
 
-  .tag-list { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-  .tag { background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:4px 9px; font-size:11px; font-family:'IBM Plex Mono',monospace; }
-
-  .note { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; line-height:1.5; margin-top:12px; text-align:center; }
-  .cite { font-size:9px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-top:4px; text-align:center; line-height:1.4; }
-
-  .prompt-card { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:13px; margin-bottom:13px; }
-  .prompt-title { font-size:13px; font-weight:500; margin-bottom:3px; }
-  .prompt-sub { font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:9px; }
-  .prompt-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:13px; padding:8px 11px; outline:none; color-scheme:light; }
-  .indicator-note { font-size:10px; color:var(--muted); font-family:'IBM Plex Mono',monospace; text-align:center; margin-bottom:10px; }
+  .prompt-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:13px;}
+  .prompt-title{font-size:13px;font-weight:500;margin-bottom:3px;}
+  .prompt-sub{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-bottom:9px;}
+  .prompt-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;padding:8px 11px;outline:none;color-scheme:light;}
+  .indicator-note{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;text-align:center;margin-bottom:10px;}
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">Infect<span>ell</span></div>
-  <div class="live-indicator">
-    <div class="dot" id="dot"></div>
-    <span id="liveLabel">ready</span>
-  </div>
+  <div class="live-indicator"><div class="dot" id="dot"></div><span id="liveLabel">ready</span></div>
 </header>
 
 <div class="camera-wrap">
@@ -131,12 +117,13 @@
 <div class="bottom-panel">
   <div class="indicator-note">Calibrated for Bromothymol Blue · pH 6.0 – 8.0</div>
 
+  <!-- Exact sampled BTB colors -->
   <div class="btb-legend" style="margin-bottom:22px">
-    <div class="btb-swatch" style="background:#d4c84a"><span>6.0</span></div>
-    <div class="btb-swatch" style="background:#a0c040"><span>6.5</span></div>
-    <div class="btb-swatch" style="background:#3a9e50"><span>7.0</span></div>
-    <div class="btb-swatch" style="background:#2a8a7a"><span>7.5</span></div>
-    <div class="btb-swatch" style="background:#2d5fa8"><span>8.0</span></div>
+    <div class="btb-swatch" style="background:#f4ea2d"><span>≈6.0</span></div>
+    <div class="btb-swatch" style="background:#76c22a"><span>≈6.5</span></div>
+    <div class="btb-swatch" style="background:#158518"><span>≈7.0</span></div>
+    <div class="btb-swatch" style="background:#2277b4"><span>≈7.5</span></div>
+    <div class="btb-swatch" style="background:#304294"><span>≈8.0</span></div>
   </div>
 
   <div class="prompt-card">
@@ -153,15 +140,11 @@
 
   <div class="result" id="result">
     <div class="ph-bar-wrap">
-      <div class="ph-labels">
-        <span>pH 6.0 · Yellow</span>
-        <span>pH 7.0 · Threshold</span>
-        <span>pH 8.0 · Blue</span>
-      </div>
+      <div class="ph-labels"><span>≈6.0 · Yellow</span><span>≈7.0 · Green</span><span>≈8.0 · Blue</span></div>
       <div class="ph-bar"><div class="ph-marker" id="phMarker"></div></div>
     </div>
     <div class="threshold-row">
-      <span class="safe">▲ Normal ≤5.3</span>
+      <span class="safe">▲ Healthy ≤5.3</span>
       <span class="warn">▲ Watch ≥6.5</span>
       <span class="danger">▲ Infected ≥7.5</span>
     </div>
@@ -173,7 +156,7 @@
     </div>
 
     <div class="result-row">
-      <span class="result-label">Detected pH</span>
+      <span class="result-label">Estimated pH</span>
       <span class="result-val" id="phVal">—</span>
     </div>
     <div class="result-row">
@@ -207,156 +190,106 @@
     </div>
 
     <div class="note">⚠ Not a substitute for medical advice. Consult a doctor.</div>
-    <div class="cite">Thresholds: Ono et al. (Burns 2015) · Costa & Horswill (PLOS Pathogens 2022)</div>
+    <div class="cite">Ono et al. (Burns 2015) · Costa & Horswill (PLOS Pathogens 2022)</div>
   </div>
 </div>
 
 <script>
   const infections = [
-    { name:'Staphylococcus aureus',     minH:24,  maxH:240, note:'most common' },
-    { name:'Staphylococcus epidermidis',minH:24,  maxH:240, note:'common in burns' },
-    { name:'Streptococcus (Group A)',   minH:6,   maxH:72  },
-    { name:'MRSA',                      minH:24,  maxH:240 },
-    { name:'Pseudomonas aeruginosa',    minH:24,  maxH:96  },
-    { name:'E. coli',                   minH:24,  maxH:192 },
-    { name:'Cellulitis',                minH:12,  maxH:168 },
-    { name:'Tetanus',                   minH:72,  maxH:504 },
+    { name:'Staphylococcus aureus',      minH:24, maxH:240, note:'most common' },
+    { name:'Staphylococcus epidermidis', minH:24, maxH:240, note:'common in burns' },
+    { name:'Streptococcus (Group A)',    minH:6,  maxH:72  },
+    { name:'MRSA',                       minH:24, maxH:240 },
+    { name:'Pseudomonas aeruginosa',     minH:24, maxH:96  },
+    { name:'E. coli',                    minH:24, maxH:192 },
+    { name:'Cellulitis',                 minH:12, maxH:168 },
+    { name:'Tetanus',                    minH:72, maxH:504 },
   ];
 
-  const btbColors = [
-    { maxPh:6.25, label:'Yellow',       hex:'#d4c84a' },
-    { maxPh:6.65, label:'Yellow-green', hex:'#a0c040' },
-    { maxPh:7.15, label:'Green',        hex:'#3a9e50' },
-    { maxPh:7.65, label:'Blue-green',   hex:'#2a8a7a' },
-    { maxPh:99,   label:'Blue',         hex:'#2d5fa8' },
-  ];
-
-  // ─── IMPROVED COLOR → pH DETECTION ───────────────────────────────────────
-  // Problem: raw hue fails under mixed/dim lighting because saturation drops.
-  // Fix: normalize RGB by total brightness first, then use channel RATIOS.
-  // This makes the detection lighting-invariant for color shifts.
-
-  function normRGB(r, g, b) {
-    const total = r + g + b;
-    if (total === 0) return { rn: 0.333, gn: 0.333, bn: 0.333 };
-    return { rn: r/total, gn: g/total, bn: b/total };
-  }
-
-  function rgbToHue(r, g, b) {
-    r/=255; g/=255; b/=255;
-    const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn;
-    if (d===0) return 0;
-    let h = mx===r ? ((g-b)/d)%6 : mx===g ? (b-r)/d+2 : (r-g)/d+4;
-    return ((h*60)+360)%360;
-  }
-
-  function lerp(a,b,t){ return a+(b-a)*Math.max(0,Math.min(1,t)); }
-
-  // BTB reference ratios (normalized RGB per color, derived from indicator chart)
-  // These are lighting-independent ratios:
-  //   Yellow:       R≈G>>B  → rn≈0.42, gn≈0.44, bn≈0.14
-  //   Yellow-green: G>R>>B  → rn≈0.35, gn≈0.50, bn≈0.15
-  //   Green:        G>>R>B  → rn≈0.24, gn≈0.58, bn≈0.18
-  //   Blue-green:   G≈B>R   → rn≈0.18, gn≈0.45, bn≈0.37
-  //   Blue:         B>G>R   → rn≈0.16, gn≈0.32, bn≈0.52
+  // Exact normalized RGB ratios sampled from the provided BTB chart image
+  // pH 6.0: #f4ea2d  rn=0.467 gn=0.447 bn=0.086
+  // pH 6.5: #76c22a  rn=0.333 gn=0.548 bn=0.119
+  // pH 7.0: #158518  rn=0.118 gn=0.747 bn=0.135
+  // pH 7.5: #2277b4  rn=0.102 gn=0.357 bn=0.541
+  // pH 8.0: #304294  rn=0.183 gn=0.252 bn=0.565
   const BTB_REFS = [
-    { ph:6.0, rn:0.42, gn:0.44, bn:0.14 },
-    { ph:6.5, rn:0.35, gn:0.50, bn:0.15 },
-    { ph:7.0, rn:0.24, gn:0.58, bn:0.18 },
-    { ph:7.5, rn:0.18, gn:0.45, bn:0.37 },
-    { ph:8.0, rn:0.16, gn:0.32, bn:0.52 },
+    { ph:6.0, rn:0.467, gn:0.447, bn:0.086, hex:'#f4ea2d', label:'Yellow',       range:'≈6.0'      },
+    { ph:6.5, rn:0.333, gn:0.548, bn:0.119, hex:'#76c22a', label:'Yellow-green', range:'≈6.0–6.5'  },
+    { ph:7.0, rn:0.118, gn:0.747, bn:0.135, hex:'#158518', label:'Green',        range:'≈6.5–7.0'  },
+    { ph:7.5, rn:0.130, gn:0.370, bn:0.500, hex:'#2277b4', label:'Blue-green',   range:'≈7.0–7.5'  },
+    { ph:8.0, rn:0.183, gn:0.252, bn:0.565, hex:'#304294', label:'Blue',         range:'≈7.5–8.0+' },
   ];
 
-  function colorDist(a, b) {
-    // Euclidean distance in normalized RGB space
-    return Math.sqrt(
-      Math.pow(a.rn - b.rn, 2) +
-      Math.pow(a.gn - b.gn, 2) +
-      Math.pow(a.bn - b.bn, 2)
-    );
+  function normRGB(r,g,b){
+    const t=r+g+b;
+    if(t===0)return{rn:0.333,gn:0.333,bn:0.333};
+    return{rn:r/t,gn:g/t,bn:b/t};
   }
 
-  function rgbToPh(r, g, b) {
-    const norm = normRGB(r, g, b);
-    const hue  = rgbToHue(r, g, b);
-
-    // Check if image is too gray/desaturated (flat ratios = no color info)
-    // A perfectly gray pixel has rn=gn=bn=0.333
-    const grayDist = colorDist(norm, {rn:0.333, gn:0.333, bn:0.333});
-
-    // If very close to gray, fall back to hue-based method
-    if (grayDist < 0.04) {
-      // Cannot determine BTB color — return neutral
-      return null;
-    }
-
-    // Find closest BTB reference using normalized RGB distance
-    let bestDist = Infinity, bestIdx = 0;
-    BTB_REFS.forEach((ref, i) => {
-      const d = colorDist(norm, ref);
-      if (d < bestDist) { bestDist = d; bestIdx = i; }
-    });
-
-    // Interpolate between two nearest reference points for smooth reading
-    if (bestIdx === 0) return 6.0;
-    if (bestIdx === BTB_REFS.length - 1) return 8.0;
-
-    const prev = BTB_REFS[bestIdx - 1];
-    const curr = BTB_REFS[bestIdx];
-    const next = BTB_REFS[bestIdx + 1];
-
-    const dPrev = colorDist(norm, prev);
-    const dNext = colorDist(norm, next);
-    const total = dPrev + dNext;
-
-    // Weighted interpolation toward neighbors
-    const t = dPrev / total;
-    return lerp(curr.ph, (t < 0.5 ? prev.ph : next.ph), Math.abs(t - 0.5) * 2);
+  function colorDist(a,b){
+    return Math.sqrt(Math.pow(a.rn-b.rn,2)+Math.pow(a.gn-b.gn,2)+Math.pow(a.bn-b.bn,2));
   }
 
-  // Research-calibrated pH → infection %
-  // Normal skin: 4.0–5.3 (healthy acid mantle)
-  // Healing wounds: acidify over time
-  // Infected wounds: alkaline shift ≥6.5, typically 7.5–8.9
-  function phToPercent(ph) {
-    if (ph === null) return null;
-    if (ph <= 6.5)  return Math.round(((ph - 6.0) / 0.5) * 20);      // 0–20% in 6.0–6.5
-    if (ph <= 7.0)  return Math.round(20 + ((ph - 6.5) / 0.5) * 25); // 20–45% in 6.5–7.0
-    if (ph <= 7.5)  return Math.round(45 + ((ph - 7.0) / 0.5) * 30); // 45–75% in 7.0–7.5
-    if (ph <= 8.5)  return Math.round(75 + ((ph - 7.5) / 1.0) * 25); // 75–100% in 7.5–8.5
+  // Returns { ph, ref, unclear }
+  function analyzeColor(r,g,b){
+    const norm=normRGB(r,g,b);
+    // Too close to gray = no useful color info
+    const grayDist=colorDist(norm,{rn:0.333,gn:0.333,bn:0.333});
+    if(grayDist<0.035) return{ph:null,ref:null,unclear:true};
+
+    // Find two closest BTB refs
+    const dists=BTB_REFS.map((ref,i)=>({i,d:colorDist(norm,ref)}));
+    dists.sort((a,b)=>a.d-b.d);
+    const best=dists[0], second=dists[1];
+
+    // If best match is very far from all refs, mark unclear
+    if(best.d > 0.18) return{ph:null,ref:null,unclear:true};
+
+    const refA=BTB_REFS[best.i];
+    const refB=BTB_REFS[second.i];
+
+    // Interpolate pH between two nearest refs
+    const total=best.d+second.d;
+    const t=best.d/total; // t=0 → exactly refA, t=0.5 → midpoint
+    const ph=refA.ph*(1-t)+refB.ph*t;
+
+    // Use the closest ref for label/color display
+    return{ph:Math.max(6.0,Math.min(8.0,ph)),ref:refA,unclear:false};
+  }
+
+  function phToPercent(ph){
+    if(ph===null)return null;
+    if(ph<=6.5) return Math.round(((ph-6.0)/0.5)*20);
+    if(ph<=7.0) return Math.round(20+((ph-6.5)/0.5)*25);
+    if(ph<=7.5) return Math.round(45+((ph-7.0)/0.5)*30);
+    if(ph<=8.5) return Math.round(75+((ph-7.5)/1.0)*25);
     return 100;
   }
 
-  function getStatus(ph) {
-    if (ph === null) return { label:'Color unclear — hold steady over bandaid', cls:'warn' };
-    if (ph < 6.5)  return { label:'Below infection threshold — normal wound pH', cls:'safe' };
-    if (ph < 7.0)  return { label:'Slight alkaline shift — monitor closely', cls:'warn' };
-    if (ph < 7.5)  return { label:'Elevated — pH rising before clinical signs appear', cls:'warn' };
-    if (ph < 8.0)  return { label:'Likely infected — seek medical advice', cls:'danger' };
-    return { label:'High infection likelihood — see a doctor now', cls:'danger' };
+  function getStatus(ph){
+    if(ph===null) return{label:'Color unclear — try better lighting or hold steady',cls:'warn'};
+    if(ph<6.5)  return{label:'Below infection threshold — normal wound acidity',cls:'safe'};
+    if(ph<7.0)  return{label:'Slight alkaline shift — beginning to rise',cls:'warn'};
+    if(ph<7.5)  return{label:'Elevated — pH rising before clinical signs appear',cls:'warn'};
+    if(ph<8.0)  return{label:'Likely infected — seek medical advice',cls:'danger'};
+    return{label:'High infection likelihood — see a doctor now',cls:'danger'};
   }
 
-  // ─── CAMERA ──────────────────────────────────────────────────────────────
-  let stream=null, facingMode='environment', animFrame=null;
-  let scanning=false, scanSamples=[];
+  // Camera
+  let stream=null,facingMode='environment',animFrame=null;
+  let scanning=false,scanSamples=[];
   const video=document.getElementById('video');
   const canvas=document.getElementById('canvas');
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
   const SCAN_SEC=3;
 
-  function toHex(r,g,b){ return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase(); }
-
-  function getBtbColor(ph){
-    if(ph===null) return {label:'Unclear',hex:'#aaaaaa'};
-    return btbColors.find(c=>ph<=c.maxPh)||btbColors[btbColors.length-1];
-  }
+  function toHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
 
   function sampleCenter(){
-    if(!video.videoWidth) return null;
-    canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+    if(!video.videoWidth)return null;
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
     ctx.drawImage(video,0,0);
-    const cx=Math.floor(video.videoWidth/2), cy=Math.floor(video.videoHeight/2);
-    // Sample a wider 15x15 area for stability in varied lighting
+    const cx=Math.floor(video.videoWidth/2),cy=Math.floor(video.videoHeight/2);
     const d=ctx.getImageData(cx-7,cy-7,15,15).data;
     let r=0,g=0,b=0,n=0;
     for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];n++;}
@@ -367,12 +300,12 @@
     const px=sampleCenter();
     if(px){
       const hex=toHex(px.r,px.g,px.b);
-      const ph=rgbToPh(px.r,px.g,px.b);
+      const {ph,ref,unclear}=analyzeColor(px.r,px.g,px.b);
       document.getElementById('liveSwatch').style.background=hex;
       document.getElementById('liveHex').textContent=hex;
-      document.getElementById('livePh').textContent=ph!==null?'pH '+ph.toFixed(1):'pH ?';
+      document.getElementById('livePh').textContent=unclear?'pH ?':(ref?ref.range:'≈'+ph.toFixed(1));
       document.getElementById('colorRing').style.borderColor=hex;
-      if(scanning) scanSamples.push(px);
+      if(scanning)scanSamples.push(px);
     }
     animFrame=requestAnimationFrame(liveLoop);
   }
@@ -389,7 +322,7 @@
       document.getElementById('dot').classList.add('active');
       document.getElementById('liveLabel').textContent='live';
       liveLoop();
-    }catch(e){ alert('Camera access denied. Please allow camera and reload.'); }
+    }catch(e){alert('Camera access denied. Please allow camera and reload.');}
   }
 
   async function flipCamera(){
@@ -402,7 +335,7 @@
 
   function beginScan(){
     if(scanning)return;
-    scanning=true; scanSamples=[];
+    scanning=true;scanSamples=[];
     document.getElementById('captureBtn').disabled=true;
     document.getElementById('captureLabel').textContent='SCANNING...';
     document.getElementById('liveLabel').textContent='scanning';
@@ -424,22 +357,19 @@
       document.getElementById('captureLabel').textContent='TAP TO SCAN AGAIN';
       document.getElementById('liveLabel').textContent='live';
       showResult();
-    }, SCAN_SEC*1000);
+    },SCAN_SEC*1000);
   }
 
   function showResult(){
     if(!scanSamples.length)return;
-    // Average all samples
     const avg=scanSamples.reduce((a,p)=>({r:a.r+p.r,g:a.g+p.g,b:a.b+p.b}),{r:0,g:0,b:0});
     const n=scanSamples.length;
     const r=Math.round(avg.r/n),g=Math.round(avg.g/n),b=Math.round(avg.b/n);
     const hex=toHex(r,g,b);
-    const ph=rgbToPh(r,g,b);
+    const {ph,ref,unclear}=analyzeColor(r,g,b);
     const pct=phToPercent(ph);
     const status=getStatus(ph);
-    const btb=getBtbColor(ph);
 
-    // Position bar marker
     if(ph!==null){
       document.getElementById('phMarker').style.left=Math.max(0,Math.min(100,((ph-6.0)/(8.0-6.0)*100)))+'%';
     }
@@ -448,18 +378,33 @@
     document.getElementById('infectionPct').className='infection-pct '+status.cls;
     document.getElementById('infectionDesc').textContent=status.label;
     document.getElementById('infectionDesc').className='infection-desc '+status.cls;
-    document.getElementById('phVal').textContent=ph!==null?'~'+ph.toFixed(1):'Unclear — try better lighting';
+
+    // Show range instead of exact pH
+    if(unclear){
+      document.getElementById('phVal').textContent='Unclear — try better lighting';
+    } else if(ref){
+      document.getElementById('phVal').textContent=ref.range+' ('+ref.label.toLowerCase()+')';
+    } else {
+      document.getElementById('phVal').textContent='≈'+ph.toFixed(1);
+    }
+
     document.getElementById('hexVal').textContent=hex;
+
     const colorEl=document.getElementById('btbColor');
-    colorEl.textContent=btb.label;
-    colorEl.style.color=btb.hex;
+    if(ref){
+      colorEl.textContent=ref.label;
+      colorEl.style.color=ref.hex;
+    } else {
+      colorEl.textContent='—';
+      colorEl.style.color='var(--muted)';
+    }
 
     const expInput=document.getElementById('exposureTime').value;
     const sec=document.getElementById('diseaseSection');
     const div=document.getElementById('diseaseDivider');
 
-    if(ph!==null && ph>=6.5){
-      div.style.display='block'; sec.style.display='block';
+    if(!unclear && ph!==null && ph>=6.5){
+      div.style.display='block';sec.style.display='block';
       if(expInput){
         const hrs=(Date.now()-new Date(expInput))/3600000;
         document.getElementById('exposureNote').textContent=' · '+Math.round(hrs)+'h elapsed';
@@ -472,7 +417,7 @@
         document.getElementById('diseaseList').innerHTML='<span style="font-size:11px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace">Enter exposure time above to filter by incubation period</span>';
       }
     } else {
-      div.style.display='none'; sec.style.display='none';
+      div.style.display='none';sec.style.display='none';
     }
 
     document.getElementById('result').classList.add('show');
