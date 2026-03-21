@@ -190,20 +190,34 @@
     </div>
 
     <div class="note">⚠ Not a substitute for medical advice. Consult a doctor.</div>
-    <div class="cite">Ono et al. (Burns 2015) · Costa & Horswill (PLOS Pathogens 2022)</div>
+    <div class="cite">CDC Yellow Book 2026, Tables 10.1.3–10.1.5 · Ono et al. (Burns 2015)</div>
   </div>
 </div>
 
 <script>
   const infections = [
-    { name:'Staphylococcus aureus',      minH:24, maxH:240, note:'most common' },
-    { name:'Staphylococcus epidermidis', minH:24, maxH:240, note:'common in burns' },
-    { name:'Streptococcus (Group A)',    minH:6,  maxH:72  },
-    { name:'MRSA',                       minH:24, maxH:240 },
-    { name:'Pseudomonas aeruginosa',     minH:24, maxH:96  },
-    { name:'E. coli',                    minH:24, maxH:192 },
-    { name:'Cellulitis',                 minH:12, maxH:168 },
-    { name:'Tetanus',                    minH:72, maxH:504 },
+    // Source: CDC Yellow Book 2026, Tables 10.1.3–10.1.5
+    // cdn.cdc.gov/yellow-book/hcp/post-travel-evaluation/post-travel-evaluation-of-the-ill-traveler.html
+    { name:'Influenza',                  minH:24,   maxH:72,    note:'' },
+    { name:'Chikungunya',                minH:24,   maxH:336,   note:'tropics/subtropics' },
+    { name:'Dengue',                     minH:72,   maxH:336,   note:'tropics/subtropics' },
+    { name:'Zika',                       minH:72,   maxH:336,   note:'Latin America, SE Asia' },
+    { name:'COVID-19',                   minH:72,   maxH:168,   note:'worldwide' },
+    { name:'Legionellosis',              minH:48,   maxH:240,   note:'worldwide' },
+    { name:'Leptospirosis',              minH:48,   maxH:624,   note:'tropical areas' },
+    { name:'Spotted Fever Rickettsiosis',minH:72,   maxH:504,   note:'region-specific' },
+    { name:'Arboviral Encephalitis',     minH:24,   maxH:480,   note:'region-specific' },
+    { name:'Enteric (Typhoid) Fever',    minH:72,   maxH:1440,  note:'S. Asia, Sub-Saharan Africa' },
+    { name:'Malaria (P. falciparum)',    minH:144,  maxH:2160,  note:'tropics/subtropics' },
+    { name:'Malaria (P. vivax)',         minH:192,  maxH:8760,  note:'tropics/subtropics' },
+    { name:'HIV (acute)',                minH:240,  maxH:1008,  note:'worldwide' },
+    { name:'Hepatitis A',               minH:360,  maxH:1200,  note:'LMICs' },
+    { name:'Hepatitis E',               minH:336,  maxH:1512,  note:'worldwide' },
+    { name:'Schistosomiasis (acute)',    minH:672,  maxH:1344,  note:'Sub-Saharan Africa' },
+    { name:'Amebic Liver Abscess',      minH:336,  maxH:2160,  note:'LMICs' },
+    { name:'Hepatitis B',               minH:1440, maxH:3600,  note:'worldwide' },
+    { name:'Visceral Leishmaniasis',    minH:240,  maxH:87600, note:'Africa, Asia, Latin America' },
+    { name:'Tuberculosis',              minH:336,  maxH:87600, note:'worldwide' },
   ];
 
   // Exact normalized RGB ratios sampled from the provided BTB chart image
@@ -218,7 +232,7 @@
     { ph:6.5, rn:0.333, gn:0.548, bn:0.119, hex:'#76c22a', label:'Yellow-green', range:'≈6.0–6.5'  },
     { ph:7.0, rn:0.240, gn:0.480, bn:0.280, hex:'#64cc7a', label:'Green',        range:'≈6.5–7.0'  },
     { ph:7.5, rn:0.217, gn:0.345, bn:0.438, hex:'#2277b4', label:'Blue-green',   range:'≈7.0–7.5'  },
-    { ph:8.0, rn:0.183, gn:0.252, bn:0.565, hex:'#304294', label:'Blue',         range:'≈7.5–8.0+' },
+    { ph:8.0, rn:0.261, gn:0.290, bn:0.448, hex:'#304294', label:'Blue',         range:'≈7.5–8.0+' },
   ];
 
   function normRGB(r,g,b){
